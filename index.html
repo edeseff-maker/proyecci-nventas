@@ -5,115 +5,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Proyección Anual</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:#ffffff; --bg2:#f5f5f2; --bg3:#eeeee9;
-      --tx:#1a1a18; --tx2:#6b6b66; --tx3:#9b9b95;
-      --bd:rgba(0,0,0,0.12); --bd2:rgba(0,0,0,0.22);
-      --r:8px; --rl:12px; --f:system-ui,-apple-system,sans-serif;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --bg:#ffffff;--bg2:#f5f5f2;--bg3:#eeeee9;
+      --tx:#1a1a18;--tx2:#6b6b66;--tx3:#9b9b95;
+      --bd:rgba(0,0,0,0.12);--bd2:rgba(0,0,0,0.22);
+      --r:8px;--rl:12px;--f:system-ui,-apple-system,sans-serif;
+      --green:#166534;--red:#B91C1C;--blue:#1e40af;--purple:#6B21A8;
     }
     @media(prefers-color-scheme:dark){
-      :root{ --bg:#1e1e1c; --bg2:#2a2a28; --bg3:#323230; --tx:#f0f0ea; --tx2:#a0a09a; --tx3:#6e6e68; --bd:rgba(255,255,255,0.10); --bd2:rgba(255,255,255,0.20); }
+      :root{--bg:#1e1e1c;--bg2:#2a2a28;--bg3:#323230;--tx:#f0f0ea;--tx2:#a0a09a;--tx3:#6e6e68;--bd:rgba(255,255,255,0.10);--bd2:rgba(255,255,255,0.20);}
     }
-    body { font-family:var(--f); background:var(--bg3); color:var(--tx); min-height:100vh; padding:2rem 1rem; }
-    .container { max-width:1200px; margin:0 auto; }
+    body{font-family:var(--f);background:var(--bg3);color:var(--tx);min-height:100vh;padding:2rem 1rem;}
+    .container{max-width:1300px;margin:0 auto;}
 
     /* header */
-    .header-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:.3rem; gap:12px; }
-    h1 { font-size:22px; font-weight:600; }
-    .export-btn { background:var(--tx); color:var(--bg); border:none; border-radius:var(--r); padding:0 16px; height:36px; font-size:13px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:7px; white-space:nowrap; flex-shrink:0; }
-    .export-btn:hover { opacity:.85; }
-    .export-btn svg { width:14px; height:14px; flex-shrink:0; }
+    .header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem;gap:12px;}
+    h1{font-size:22px;font-weight:600;}
+    .export-btn{background:var(--tx);color:var(--bg);border:none;border-radius:var(--r);padding:0 16px;height:36px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;flex-shrink:0;}
+    .export-btn:hover{opacity:.85;}
+    .export-btn svg{width:14px;height:14px;flex-shrink:0;}
 
-    .api-status { font-size:11px; color:var(--tx3); margin-bottom:1.4rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-    .sdot { width:7px; height:7px; border-radius:50%; display:inline-block; flex-shrink:0; }
-    .sok{background:#4caf50;} .swarn{background:#ff9800;} .sload{background:var(--tx3);animation:blink 1.2s infinite;}
+    .api-status{font-size:11px;color:var(--tx3);margin-bottom:1.4rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    .sdot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
+    .sok{background:#4caf50;}.swarn{background:#ff9800;}.sload{background:var(--tx3);animation:blink 1.2s infinite;}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-    input,select { background:var(--bg); border:0.5px solid var(--bd2); border-radius:var(--r); color:var(--tx); font-family:var(--f); font-size:14px; height:36px; padding:0 10px; outline:none; width:100%; }
-    input::placeholder { color:var(--tx3); }
+    input,select{background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--r);color:var(--tx);font-family:var(--f);font-size:14px;height:36px;padding:0 10px;outline:none;width:100%;}
+    input::placeholder{color:var(--tx3);}
 
     /* año */
-    .year-row { display:flex; align-items:center; gap:12px; margin-bottom:1.4rem; }
-    .year-row label { font-size:13px; font-weight:500; color:var(--tx2); white-space:nowrap; }
-    .year-row select { width:200px; }
+    .year-row{display:flex;align-items:center;gap:12px;margin-bottom:1.4rem;}
+    .year-row label{font-size:13px;font-weight:500;color:var(--tx2);white-space:nowrap;}
+    .year-row select{width:200px;}
 
-    /* summary */
-    .summary { display:grid; grid-template-columns:repeat(7,1fr); gap:10px; margin-bottom:1.4rem; }
-    @media(max-width:900px){ .summary{grid-template-columns:repeat(4,1fr);} }
-    @media(max-width:500px){ .summary{grid-template-columns:1fr 1fr;} }
-    .metric { background:var(--bg2); border-radius:var(--r); padding:.8rem 1rem; }
-    .metric-label { font-size:10px; color:var(--tx2); margin-bottom:4px; text-transform:uppercase; letter-spacing:.04em; }
-    .metric-value { font-size:15px; font-weight:500; }
+    /* summary ventas */
+    .summary{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:1.4rem;}
+    /* summary costos */
+    .summary-costos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.4rem;}
+    @media(max-width:900px){.summary,.summary-costos{grid-template-columns:repeat(4,1fr);}}
+    @media(max-width:500px){.summary,.summary-costos{grid-template-columns:1fr 1fr;}}
+    .metric{background:var(--bg2);border-radius:var(--r);padding:.8rem 1rem;}
+    .metric-label{font-size:10px;color:var(--tx2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
+    .metric-value{font-size:15px;font-weight:500;}
 
     /* tabla */
-    .sec { font-size:12px; font-weight:500; color:var(--tx2); margin-bottom:10px; }
-    .table-wrap { overflow-x:auto; margin-bottom:1.6rem; }
-    table { border-collapse:collapse; font-size:12px; min-width:1350px; width:100%; }
-    th { padding:7px 8px; font-size:11px; font-weight:500; color:var(--tx2); border-bottom:0.5px solid var(--bd2); text-align:right; white-space:nowrap; }
-    th.left { text-align:left; }
-    th.grp { background:var(--bg2); }
-    td { padding:6px 8px; border-bottom:0.5px solid var(--bd); text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
-    td.left { text-align:left; color:var(--tx2); }
-    td.bold { font-weight:500; }
-    td.neg { color:#B91C1C; }
-    td.pos { color:#166534; }
-    tr.total-row td { font-weight:500; border-top:0.5px solid var(--bd2); border-bottom:none; background:var(--bg2); }
-    tr.total-row td.left { color:var(--tx); }
+    .sec{font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:10px;}
+    .table-wrap{overflow-x:auto;margin-bottom:1.6rem;}
+    table{border-collapse:collapse;font-size:12px;width:100%;}
+    th{padding:7px 8px;font-size:11px;font-weight:500;color:var(--tx2);border-bottom:0.5px solid var(--bd2);text-align:right;white-space:nowrap;}
+    th.left{text-align:left;}
+    th.grp{background:var(--bg2);}
+    th.grp-cost{background:#FEF3C7;}
+    @media(prefers-color-scheme:dark){th.grp-cost{background:#451a03;}}
+    td{padding:6px 8px;border-bottom:0.5px solid var(--bd);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+    td.left{text-align:left;color:var(--tx2);}
+    td.bold{font-weight:500;}
+    td.neg{color:var(--red);}
+    td.pos{color:var(--green);}
+    td.margin{color:var(--blue);font-weight:500;}
+    tr.total-row td{font-weight:500;border-top:0.5px solid var(--bd2);border-bottom:none;background:var(--bg2);}
+    tr.total-row td.left{color:var(--tx);}
 
     /* tabs */
-    .tabs { display:flex; border-bottom:0.5px solid var(--bd2); margin-bottom:0; }
-    .tab { padding:9px 18px; font-size:13px; font-weight:500; color:var(--tx2); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color .15s,border-color .15s; }
-    .tab.active { color:var(--tx); border-bottom-color:var(--tx); }
-    .tab:hover { color:var(--tx); }
-    .tab-panel { display:none; padding-top:1.4rem; }
-    .tab-panel.active { display:block; }
+    .tabs{display:flex;border-bottom:0.5px solid var(--bd2);margin-bottom:0;}
+    .tab{padding:9px 18px;font-size:13px;font-weight:500;color:var(--tx2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+    .tab.active{color:var(--tx);border-bottom-color:var(--tx);}
+    .tab:hover{color:var(--tx);}
+    .tab-panel{display:none;padding-top:1.4rem;}
+    .tab-panel.active{display:block;}
 
-    /* panel top fields */
-    .panel-top { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; align-items:start; background:var(--bg2); border:0.5px solid var(--bd); border-radius:var(--rl); padding:16px 18px; margin-bottom:1.4rem; }
-    @media(max-width:800px){ .panel-top{grid-template-columns:1fr 1fr;} }
-    .field label { font-size:12px; color:var(--tx2); display:block; margin-bottom:6px; font-weight:500; min-height:30px; line-height:1.35; }
-    .sub { font-size:11px; color:var(--tx3); margin-top:5px; }
+    /* panel campos globales */
+    .panel-top{display:grid;gap:12px;align-items:start;background:var(--bg2);border:0.5px solid var(--bd);border-radius:var(--rl);padding:16px 18px;margin-bottom:1.4rem;}
+    .panel-top-4{grid-template-columns:repeat(4,1fr);}
+    .panel-top-1{grid-template-columns:280px 1fr;}
+    @media(max-width:800px){.panel-top{grid-template-columns:1fr 1fr!important;}}
+    .field label{font-size:12px;color:var(--tx2);display:block;margin-bottom:6px;font-weight:500;min-height:30px;line-height:1.35;}
+    .sub{font-size:11px;color:var(--tx3);margin-top:5px;}
 
     /* ipc legend */
-    .ipc-legend { display:flex; gap:12px; margin-bottom:12px; font-size:11px; color:var(--tx2); flex-wrap:wrap; }
-    .ipc-legend span { display:flex; align-items:center; gap:5px; }
-    .dot { width:8px; height:8px; border-radius:2px; }
+    .ipc-legend{display:flex;gap:12px;margin-bottom:12px;font-size:11px;color:var(--tx2);flex-wrap:wrap;}
+    .ipc-legend span{display:flex;align-items:center;gap:5px;}
+    .dot{width:8px;height:8px;border-radius:2px;}
 
     /* month cards */
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.4rem; }
-    @media(max-width:640px){ .grid{grid-template-columns:1fr 1fr;} }
-    @media(max-width:420px){ .grid{grid-template-columns:1fr;} }
-    .card { background:var(--bg); border:0.5px solid var(--bd); border-radius:var(--rl); padding:12px 14px; }
-    .card-month { font-size:12px; font-weight:500; color:var(--tx2); margin-bottom:8px; text-transform:uppercase; letter-spacing:.04em; }
-    .inp-label { font-size:11px; color:var(--tx3); margin-bottom:3px; }
-    .dias-badges { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px; }
-    .db { font-size:10px; padding:1px 6px; border-radius:3px; font-weight:500; }
-    .db-h{background:#EAF3DE;color:#3B6D11;} .db-s{background:#FAEEDA;color:#854F0B;} .db-0{background:#F1EFE8;color:#5F5E5A;}
-    @media(prefers-color-scheme:dark){ .db-h{background:#27500A;color:#C0DD97;} .db-s{background:#633806;color:#FAC775;} .db-0{background:#444441;color:#B4B2A9;} }
-    .card-inputs-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:6px; }
-    .result-row { display:flex; justify-content:space-between; align-items:baseline; border-top:0.5px solid var(--bd); padding-top:8px; margin-top:4px; }
-    .result-val { font-size:14px; font-weight:500; }
-    .result-meta { font-size:11px; color:var(--tx3); }
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.4rem;}
+    @media(max-width:640px){.grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:420px){.grid{grid-template-columns:1fr;}}
+    .card{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:12px 14px;}
+    .card-month{font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;}
+    .inp-label{font-size:11px;color:var(--tx3);margin-bottom:3px;}
+    .dias-badges{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+    .db{font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500;}
+    .db-h{background:#EAF3DE;color:#3B6D11;}.db-s{background:#FAEEDA;color:#854F0B;}.db-0{background:#F1EFE8;color:#5F5E5A;}
+    @media(prefers-color-scheme:dark){.db-h{background:#27500A;color:#C0DD97;}.db-s{background:#633806;color:#FAC775;}.db-0{background:#444441;color:#B4B2A9;}}
+    .card-inputs-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;}
+    .card-inputs-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;}
+    .result-row{display:flex;justify-content:space-between;align-items:baseline;border-top:0.5px solid var(--bd);padding-top:8px;margin-top:4px;}
+    .result-val{font-size:14px;font-weight:500;}
+    .result-meta{font-size:11px;color:var(--tx3);}
 
     .badge-real{font-size:10px;background:#EAF3DE;color:#3B6D11;padding:1px 5px;border-radius:3px;font-weight:500;margin-left:4px;vertical-align:middle;}
     .badge-proy{font-size:10px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:3px;font-weight:500;margin-left:4px;vertical-align:middle;}
     .badge-calc{font-size:10px;background:#F3EBFF;color:#6B21A8;padding:1px 5px;border-radius:3px;font-weight:500;margin-left:4px;vertical-align:middle;}
-    @media(prefers-color-scheme:dark){ .badge-real{background:#27500A;color:#C0DD97;} .badge-proy{background:#0C447C;color:#B5D4F4;} .badge-calc{background:#3B1A6B;color:#D8B4FE;} }
+    @media(prefers-color-scheme:dark){.badge-real{background:#27500A;color:#C0DD97;}.badge-proy{background:#0C447C;color:#B5D4F4;}.badge-calc{background:#3B1A6B;color:#D8B4FE;}}
 
     /* notas */
-    .notes-box { background:var(--bg2); border:0.5px solid var(--bd); border-radius:var(--rl); padding:1.2rem 1.4rem; margin-bottom:1.8rem; font-size:12px; color:var(--tx2); line-height:1.75; }
-    .notes-title { font-size:13px; font-weight:500; color:var(--tx); margin-bottom:14px; }
-    .notes-grid { display:grid; grid-template-columns:160px 1fr; gap:8px 20px; }
-    .notes-grid dt { font-weight:500; color:var(--tx); font-size:12px; padding-top:2px; }
-    .notes-grid dd { margin:0; }
-    .notes-section { font-size:11px; font-weight:600; color:var(--tx3); text-transform:uppercase; letter-spacing:.06em; margin:14px 0 8px; grid-column:1/-1; }
+    .notes-box{background:var(--bg2);border:0.5px solid var(--bd);border-radius:var(--rl);padding:1.2rem 1.4rem;margin-bottom:1.8rem;font-size:12px;color:var(--tx2);line-height:1.75;}
+    .notes-title{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:14px;}
+    .notes-grid{display:grid;grid-template-columns:160px 1fr;gap:8px 20px;}
+    .notes-grid dt{font-weight:500;color:var(--tx);font-size:12px;padding-top:2px;}
+    .notes-grid dd{margin:0;}
+    .notes-section{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px;grid-column:1/-1;}
+    .notes-grid a{color:var(--tx2);}
   </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- HEADER -->
   <div class="header-row">
     <h1>Proyección Anual</h1>
     <button class="export-btn" onclick="exportExcel()">
@@ -123,7 +132,6 @@
   </div>
   <div class="api-status" id="api-status"><span class="sdot sload"></span> Conectando con ArgentinaDatos…</div>
 
-  <!-- AÑO -->
   <div class="year-row">
     <label>Año a proyectar</label>
     <select id="sel-year" onchange="onYearChange()">
@@ -134,8 +142,8 @@
     </select>
   </div>
 
-  <!-- RESUMEN -->
-  <div class="sec">Resumen anual</div>
+  <!-- RESUMEN VENTAS -->
+  <div class="sec">Resumen anual — Ventas</div>
   <div class="summary">
     <div class="metric"><div class="metric-label">Total unidades</div><div class="metric-value" id="s-uds">—</div></div>
     <div class="metric"><div class="metric-label">Venta bruta</div><div class="metric-value" id="s-vb">—</div></div>
@@ -146,47 +154,58 @@
     <div class="metric"><div class="metric-label">Inflación acum.</div><div class="metric-value" id="s-inflac">—</div></div>
   </div>
 
+  <!-- RESUMEN COSTOS -->
+  <div class="sec">Resumen anual — Costos y Margen</div>
+  <div class="summary-costos">
+    <div class="metric"><div class="metric-label">Costo bruto</div><div class="metric-value" id="s-cb">—</div></div>
+    <div class="metric"><div class="metric-label">Dto. laboratorios ($)</div><div class="metric-value" id="s-dl">—</div></div>
+    <div class="metric"><div class="metric-label">Costo neto</div><div class="metric-value" id="s-cn">—</div></div>
+    <div class="metric"><div class="metric-label" style="color:var(--blue)">Margen bruto</div><div class="metric-value" id="s-mb" style="color:var(--blue)">—</div></div>
+  </div>
+
   <!-- TABLA -->
   <div class="sec">Proyección mensual completa</div>
   <div class="table-wrap">
-    <table>
+    <table id="main-table">
       <thead>
         <tr>
           <th class="left" rowspan="2">Mes</th>
-          <th rowspan="2">Háb.</th>
-          <th rowspan="2">Parc.</th>
-          <th rowspan="2">Base/día</th>
-          <th rowspan="2">Proy./día</th>
-          <th rowspan="2">Unidades</th>
-          <th rowspan="2">Inflac.</th>
-          <th rowspan="2">Precio unit.</th>
+          <th rowspan="2">Háb.</th><th rowspan="2">Parc.</th>
+          <th rowspan="2">Base/día</th><th rowspan="2">Proy./día</th><th rowspan="2">Unidades</th>
+          <th rowspan="2">Inflac.</th><th rowspan="2">Precio unit.</th>
           <th rowspan="2">Venta bruta ($)</th>
           <th colspan="2" class="grp" style="text-align:center;">Dto. condición</th>
           <th colspan="2" class="grp" style="text-align:center;">Dto. ofertas</th>
           <th colspan="2" class="grp" style="text-align:center;">Ganancia</th>
           <th rowspan="2">Venta neta ($)</th>
+          <th rowspan="2">Costo bruto ($)</th>
+          <th colspan="2" class="grp-cost" style="text-align:center;">Dto. laboratorios</th>
+          <th rowspan="2">Costo neto ($)</th>
+          <th rowspan="2" style="color:var(--blue)">Margen bruto ($)</th>
         </tr>
         <tr>
           <th class="grp">%</th><th class="grp">$</th>
           <th class="grp">%</th><th class="grp">$</th>
           <th class="grp">%</th><th class="grp">$</th>
+          <th class="grp-cost">%</th><th class="grp-cost">$</th>
         </tr>
       </thead>
       <tbody id="res-body">
-        <tr><td colspan="16" style="color:var(--tx3);padding:1.5rem;text-align:center;">Cargando…</td></tr>
+        <tr><td colspan="22" style="color:var(--tx3);padding:1.5rem;text-align:center;">Cargando…</td></tr>
       </tbody>
     </table>
   </div>
 
   <!-- TABS -->
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('ventas')">Proyección de ventas</div>
-    <div class="tab" onclick="switchTab('notas')">Notas metodológicas</div>
+    <div class="tab active"  onclick="switchTab('ventas')">Proyección de ventas</div>
+    <div class="tab"         onclick="switchTab('costos')">Proyección de costos</div>
+    <div class="tab"         onclick="switchTab('notas')">Notas metodológicas</div>
   </div>
 
-  <!-- TAB VENTAS -->
+  <!-- TAB: VENTAS -->
   <div class="tab-panel active" id="tab-ventas">
-    <div class="panel-top">
+    <div class="panel-top panel-top-4">
       <div class="field">
         <label>% de aumento de ventas diarias vs. año anterior</label>
         <input type="number" id="inp-crec" placeholder="Ej: 10" step="0.1" oninput="refreshAll()">
@@ -213,44 +232,58 @@
       <span><span class="dot" style="background:#378ADD"></span>Proyección API</span>
       <span><span class="dot" style="background:#6B21A8"></span>Calculado (2027–2028)</span>
     </div>
-
-    <div class="grid" id="cards-grid">
+    <div class="grid" id="cards-ventas">
       <div style="grid-column:1/-1;color:var(--tx3);font-size:13px;padding:1rem 0;">Cargando datos…</div>
     </div>
   </div>
 
-  <!-- TAB NOTAS -->
+  <!-- TAB: COSTOS -->
+  <div class="tab-panel" id="tab-costos">
+    <div class="panel-top panel-top-1">
+      <div class="field">
+        <label>Descuento de los laboratorios (%)</label>
+        <input type="number" id="inp-dto-lab" placeholder="Ej: 8" step="0.1" oninput="refreshAll()">
+        <div class="sub">Se aplica sobre el costo bruto. Es positivo (representa una ganancia). Editable por mes en cada tarjeta.</div>
+      </div>
+    </div>
+
+    <div class="grid" id="cards-costos">
+      <div style="grid-column:1/-1;color:var(--tx3);font-size:13px;padding:1rem 0;">Cargando datos…</div>
+    </div>
+  </div>
+
+  <!-- TAB: NOTAS -->
   <div class="tab-panel" id="tab-notas">
     <div class="notes-box">
       <div class="notes-title" id="notes-title">Metodología de cálculo</div>
       <dl class="notes-grid">
-
         <div class="notes-section">Fuentes de datos</div>
         <dt>Feriados</dt>
         <dd>ArgentinaDatos (<a href="https://argentinadatos.com" target="_blank">argentinadatos.com</a>) — calendario oficial del Poder Ejecutivo Nacional, actualizado en tiempo real.</dd>
         <dt>Inflación IPC</dt>
-        <dd>ArgentinaDatos (<a href="https://argentinadatos.com" target="_blank">argentinadatos.com</a>) — datos oficiales del INDEC (Índice de Precios al Consumidor Nacional), actualizados en tiempo real.</dd>
+        <dd>ArgentinaDatos (<a href="https://argentinadatos.com" target="_blank">argentinadatos.com</a>) — datos oficiales del INDEC, actualizados en tiempo real.</dd>
 
         <div class="notes-section">Feriados y días hábiles</div>
-        <dt id="lbl-fer">Feriados</dt><dd id="note-fer">Cargando…</dd>
+        <dt>Feriados</dt><dd id="note-fer">Cargando…</dd>
         <dt>Días parciales</dt>
-        <dd>Sábados, feriados puente, no laborables y bancarios se computan al 60 % de un día hábil. Domingos y feriados inamovibles o trasladables = 0 % (sin ventas).</dd>
+        <dd>Sábados, feriados puente, no laborables y bancarios = 60 % de un día hábil. Domingos y feriados inamovibles o trasladables = 0 % (sin ventas).</dd>
 
         <div class="notes-section">Inflación y precios</div>
-        <dt id="lbl-ipc">IPC</dt><dd id="note-ipc">Cargando…</dd>
+        <dt>IPC</dt><dd id="note-ipc">Cargando…</dd>
         <dt>Precio unitario</dt>
         <dd>Precio(mes N) = Precio base dic × ∏(1 + IPC_i) para i = 1 a N. La inflación se acumula mes a mes.</dd>
 
-        <div class="notes-section">Descuentos y ganancia</div>
-        <dt>Dto. condición</dt>
-        <dd>Descuento fijo aplicado a todos los meses, expresado como % sobre la venta bruta mensual.</dd>
-        <dt>Dto. ofertas</dt>
-        <dd>Descuento variable por mes, expresado como % sobre la venta bruta. Se ingresa en cada tarjeta mensual.</dd>
-        <dt>Ganancia</dt>
-        <dd>% fijo aplicado sobre la venta bruta de cada mes, igual para todos los períodos.</dd>
-        <dt>Venta neta</dt>
-        <dd>Venta bruta − Dto. condición − Dto. ofertas + Ganancia.</dd>
+        <div class="notes-section">Ventas</div>
+        <dt>Dto. condición</dt><dd>% fijo sobre venta bruta, igual para todos los meses.</dd>
+        <dt>Dto. ofertas</dt><dd>% variable por mes sobre venta bruta. Se ingresa en cada tarjeta mensual.</dd>
+        <dt>Ganancia</dt><dd>% fijo sobre venta bruta, igual para todos los meses.</dd>
+        <dt>Venta neta</dt><dd>Venta bruta − Dto. condición − Dto. ofertas + Ganancia.</dd>
 
+        <div class="notes-section">Costos</div>
+        <dt>Costo bruto</dt><dd>% de costo sobre venta bruta ingresado en cada tarjeta mensual, aplicado sobre la venta bruta de ese mes.</dd>
+        <dt>Dto. laboratorios</dt><dd>% positivo aplicado sobre el costo bruto (representa una ganancia/recupero). El campo global define la base. En cada tarjeta mensual se sugiere automáticamente un ajuste según la inflación proyectada: <strong>por cada punto porcentual que baja la inflación respecto al mes anterior, el descuento sugerido sube 0,3 puntos</strong> (factor de sensibilidad = 0,3), y viceversa. Esta lógica refleja que en contextos de menor inflación los laboratorios suelen ofrecer mejores condiciones comerciales. Todos los valores son editables manualmente.</dd>
+        <dt>Costo neto</dt><dd>Costo bruto − Dto. laboratorios.</dd>
+        <dt>Margen bruto</dt><dd>Venta neta − Costo neto.</dd>
       </dl>
     </div>
   </div>
@@ -259,126 +292,125 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const MESES   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const API     = 'https://api.argentinadatos.com/v1';
-const TIPOS_PARCIAL = new Set(['puente','no_laborable','bancario']);
-const INAMOVIBLES   = ['01-01','03-24','04-02','05-01','05-25','06-20','07-09','12-08','12-25'];
-const TRASLADABLES  = ['08-17','10-12','11-20'];
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const API='https://api.argentinadatos.com/v1';
+const TIPOS_PARCIAL=new Set(['puente','no_laborable','bancario']);
+const INAMOVIBLES=['01-01','03-24','04-02','05-01','05-25','06-20','07-09','12-08','12-25'];
+const TRASLADABLES=['08-17','10-12','11-20'];
 
-const ferCache={}, ipcReal={}, ipcUser={}, bases={}, dtosOfertas={};
+const ferCache={},ipcReal={},ipcUser={},bases={},dtosOfertas={};
+// costos por mes: { year: { m: { pctCosto, pctLab } } }
+const costosMes={};
+// dto lab override por mes
+const dtosLabMes={};
 let lastTableData=[];
 
-function pad(n){ return String(n).padStart(2,'0'); }
-function fmt(n){ return Math.round(n).toLocaleString('es-AR'); }
+function pad(n){return String(n).padStart(2,'0');}
+function fmt(n){return Math.round(n).toLocaleString('es-AR');}
 function fmtM(n){
-  if(n>=1e9) return '$'+(n/1e9).toFixed(1)+'B';
-  if(n>=1e6) return '$'+(n/1e6).toFixed(1)+'M';
+  if(n>=1e9)return '$'+(n/1e9).toFixed(1)+'B';
+  if(n>=1e6)return '$'+(n/1e6).toFixed(1)+'M';
   return '$'+fmt(n);
 }
-function getYear()    { return parseInt(document.getElementById('sel-year').value); }
-function getCrec()    { return parseFloat(document.getElementById('inp-crec').value); }
-function getPrecio()  { return parseFloat(document.getElementById('inp-precio').value); }
-function getDtoCond() { return parseFloat(document.getElementById('inp-dto-cond').value)||0; }
-function getGanancia(){ return parseFloat(document.getElementById('inp-ganancia').value)||0; }
+function getYear(){return parseInt(document.getElementById('sel-year').value);}
+function getCrec(){return parseFloat(document.getElementById('inp-crec').value);}
+function getPrecio(){return parseFloat(document.getElementById('inp-precio').value);}
+function getDtoCond(){return parseFloat(document.getElementById('inp-dto-cond').value)||0;}
+function getGanancia(){return parseFloat(document.getElementById('inp-ganancia').value)||0;}
+function getDtoLab(){return parseFloat(document.getElementById('inp-dto-lab').value)||0;}
 
 function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['ventas','notas'][i]===name));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['ventas','costos','notas'][i]===name));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name));
 }
 
+// ── Easter ───────────────────────────────────────────────────────────────────
 function calcEaster(Y){
   const a=Y%19,b=Math.floor(Y/100),c=Y%100,d=Math.floor(b/4),e=b%4;
   const f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
   const i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451);
   return new Date(Y,Math.floor((h+l-7*m+114)/31)-1,((h+l-7*m+114)%31)+1);
 }
-function fmtDate(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function fmtDate(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function lunesMasCercano(year,mmdd){
-  const [m,d]=[parseInt(mmdd),parseInt(mmdd.split('-')[1])];
+  const[m,d]=[parseInt(mmdd),parseInt(mmdd.split('-')[1])];
   const date=new Date(year,m-1,d),dow=date.getDay();
-  if(dow===1) return date;
-  const prev=new Date(date); prev.setDate(d-(dow===0?6:dow-1));
-  const next=new Date(date); next.setDate(d+(dow===0?1:8-dow));
-  return (date-prev)<=(next-date)?prev:next;
+  if(dow===1)return date;
+  const prev=new Date(date);prev.setDate(d-(dow===0?6:dow-1));
+  const next=new Date(date);next.setDate(d+(dow===0?1:8-dow));
+  return(date-prev)<=(next-date)?prev:next;
 }
 function calcFeriadosFuturos(year){
   const map={};
-  for(const mmdd of INAMOVIBLES) map[year+'-'+mmdd]='F';
+  for(const mmdd of INAMOVIBLES)map[year+'-'+mmdd]='F';
   const easter=calcEaster(year);
-  const jS=new Date(easter); jS.setDate(easter.getDate()-3); map[fmtDate(jS)]='P';
-  const vS=new Date(easter); vS.setDate(easter.getDate()-2); map[fmtDate(vS)]='F';
-  const cen=new Date(easter); cen.setDate(easter.getDate()-46);
-  const lC=new Date(cen); lC.setDate(cen.getDate()-2); map[fmtDate(lC)]='P';
-  const mC=new Date(cen); mC.setDate(cen.getDate()-1); map[fmtDate(mC)]='P';
-  for(const mmdd of TRASLADABLES) map[fmtDate(lunesMasCercano(year,mmdd))]='F';
+  const jS=new Date(easter);jS.setDate(easter.getDate()-3);map[fmtDate(jS)]='P';
+  const vS=new Date(easter);vS.setDate(easter.getDate()-2);map[fmtDate(vS)]='F';
+  const cen=new Date(easter);cen.setDate(easter.getDate()-46);
+  const lC=new Date(cen);lC.setDate(cen.getDate()-2);map[fmtDate(lC)]='P';
+  const mC=new Date(cen);mC.setDate(cen.getDate()-1);map[fmtDate(mC)]='P';
+  for(const mmdd of TRASLADABLES)map[fmtDate(lunesMasCercano(year,mmdd))]='F';
   return map;
 }
-
 async function fetchFeriados(year){
-  if(ferCache[year]) return ferCache[year];
-  if(year>=2027){ ferCache[year]=calcFeriadosFuturos(year); return ferCache[year]; }
+  if(ferCache[year])return ferCache[year];
+  if(year>=2027){ferCache[year]=calcFeriadosFuturos(year);return ferCache[year];}
   try{
     const r=await fetch(`${API}/feriados/${year}`);
-    if(!r.ok) throw new Error();
+    if(!r.ok)throw new Error();
     const data=await r.json();
     const map={};
-    for(const f of data) map[f.fecha]=TIPOS_PARCIAL.has((f.tipo||'').toLowerCase())?'P':'F';
-    ferCache[year]=map; return map;
-  }catch(e){ ferCache[year]=calcFeriadosFuturos(year); return ferCache[year]; }
+    for(const f of data)map[f.fecha]=TIPOS_PARCIAL.has((f.tipo||'').toLowerCase())?'P':'F';
+    ferCache[year]=map;return map;
+  }catch(e){ferCache[year]=calcFeriadosFuturos(year);return ferCache[year];}
 }
-
 async function fetchIPC(){
   try{
     const r=await fetch(`${API}/finanzas/indices/inflacion`);
-    if(!r.ok) throw new Error();
+    if(!r.ok)throw new Error();
     const data=await r.json();
-    for(const row of data){
-      const d=new Date(row.fecha);
-      ipcReal[d.getFullYear()+'-'+pad(d.getMonth()+1)]=row.valor;
-    }
+    for(const row of data){const d=new Date(row.fecha);ipcReal[d.getFullYear()+'-'+pad(d.getMonth()+1)]=row.valor;}
     return true;
-  }catch(e){ return false; }
+  }catch(e){return false;}
 }
-
 function ipcProyectado(y,m){
   const key=y+'-'+pad(m);
-  if(ipcReal[key]!==undefined) return ipcReal[key];
+  if(ipcReal[key]!==undefined)return ipcReal[key];
   const keys=Object.keys(ipcReal).sort();
-  if(!keys.length) return 2.0;
+  if(!keys.length)return 2.0;
   const lk=keys[keys.length-1],lv=ipcReal[lk];
-  const [ly,lm]=lk.split('-').map(Number),diff=(y-ly)*12+(m-lm);
+  const[ly,lm]=lk.split('-').map(Number),diff=(y-ly)*12+(m-lm);
   return Math.max(1.5,Math.round(lv*Math.exp(-Math.log(lv/1.5)/24*diff)*10)/10);
 }
-function isRealIPC(y,m){ return ipcReal[y+'-'+pad(m)]!==undefined; }
-function isCalcIPC(y,m){ return y>=2027; }
-function getIPC(y,m){ const k=y+'-'+pad(m); return ipcUser[k]!==undefined?ipcUser[k]:ipcProyectado(y,m); }
-
+function isRealIPC(y,m){return ipcReal[y+'-'+pad(m)]!==undefined;}
+function isCalcIPC(y,m){return y>=2027;}
+function getIPC(y,m){const k=y+'-'+pad(m);return ipcUser[k]!==undefined?ipcUser[k]:ipcProyectado(y,m);}
 function calcMes(y,m,ferMap){
   const dias=new Date(y,m,0).getDate();
   let hab=0,par=0,cer=0,efec=0;
   for(let d=1;d<=dias;d++){
     const key=y+'-'+pad(m)+'-'+pad(d),dow=new Date(y,m-1,d).getDay(),fer=ferMap?ferMap[key]:undefined;
-    if(dow===0){cer++;continue;} if(fer==='F'){cer++;continue;}
+    if(dow===0){cer++;continue;}if(fer==='F'){cer++;continue;}
     if(fer==='P'||dow===6){par++;efec+=0.6;continue;}
     hab++;efec+=1;
   }
   return{hab,par,cer,efec};
 }
 
-async function renderCards(){
+// ── Render tarjetas ventas ───────────────────────────────────────────────────
+async function renderCardsVentas(){
   const y=getYear();
-  if(!bases[y]) bases[y]={};
-  if(!dtosOfertas[y]) dtosOfertas[y]={};
+  if(!bases[y])bases[y]={};
+  if(!dtosOfertas[y])dtosOfertas[y]={};
   const ferMap=await fetchFeriados(y);
-  const g=document.getElementById('cards-grid');
+  const g=document.getElementById('cards-ventas');
   g.innerHTML='';
   for(let m=1;m<=12;m++){
     const{hab,par,cer}=calcMes(y,m,ferMap);
     const ipcVal=getIPC(y,m),real=isRealIPC(y,m),calc=isCalcIPC(y,m);
     const bc=real?'badge-real':calc?'badge-calc':'badge-proy';
     const bl=real?'Real':calc?'Calc.':'Proy.';
-    const div=document.createElement('div');
-    div.className='card';
+    const div=document.createElement('div');div.className='card';
     div.innerHTML=`
       <div class="card-month">${MESES[m-1]} <span class="${bc}">${bl}</span></div>
       <div class="dias-badges">
@@ -398,38 +430,105 @@ async function renderCards(){
             value="${dtosOfertas[y][m]||''}" oninput="onDtoOfertas(${m})"></div>
       </div>
       <div class="result-row">
-        <div class="result-meta" id="meta-${m}"></div>
-        <div class="result-val"  id="rv-${m}">—</div>
+        <div class="result-meta" id="meta-v-${m}"></div>
+        <div class="result-val"  id="rv-v-${m}">—</div>
       </div>`;
     g.appendChild(div);
   }
+}
+
+// ── Sugerir dto lab por mes según inflación ──────────────────────────────────
+// Factor de sensibilidad: 0.3 — por cada punto que baja la inflación vs el mes
+// anterior, el descuento sube 0.3 puntos. Si sube la inflación, baja el dto.
+const SENS = 0.3;
+function calcDtoLabSugerido(y, m, dtoBase){
+  if(!dtoBase) return '';
+  const ipcActual = getIPC(y, m);
+  const ipcAnterior = m === 1 ? getIPC(y-1, 12) : getIPC(y, m-1);
+  const delta = ipcAnterior - ipcActual; // positivo = inflación bajó
+  const sugerido = Math.round((dtoBase + delta * SENS) * 10) / 10;
+  return Math.max(0, sugerido).toFixed(1);
+}
+
+// ── Render tarjetas costos ───────────────────────────────────────────────────
+async function renderCardsCostos(){
+  const y=getYear();
+  if(!costosMes[y])costosMes[y]={};
+  if(!dtosLabMes[y])dtosLabMes[y]={};
+  const ferMap=await fetchFeriados(y);
+  const g=document.getElementById('cards-costos');
+  g.innerHTML='';
+  const dtoLabGlobal=getDtoLab();
+  for(let m=1;m<=12;m++){
+    const{hab,par,cer}=calcMes(y,m,ferMap);
+    const pctCosto=(costosMes[y][m]!==undefined?costosMes[y][m]:'');
+    // Si el usuario ya editó manualmente, usar ese valor; si no, calcular sugerido
+    const pctLabSugerido = calcDtoLabSugerido(y, m, dtoLabGlobal);
+    const pctLab = dtosLabMes[y][m]!==undefined ? dtosLabMes[y][m] : pctLabSugerido;
+    const ipcMes = getIPC(y,m);
+    const ipcPrev = m===1 ? getIPC(y-1,12) : getIPC(y,m-1);
+    const delta = ipcPrev - ipcMes;
+    const tendencia = delta > 0.1 ? '↑ inflac. baja → dto. mejora' : delta < -0.1 ? '↓ inflac. sube → dto. baja' : '→ inflac. estable';
+    const div=document.createElement('div');div.className='card';
+    div.innerHTML=`
+      <div class="card-month">${MESES[m-1]}</div>
+      <div class="dias-badges">
+        <span class="db db-h">${hab} háb.</span>
+        <span class="db db-s">${par} parc.</span>
+        <span class="db db-0">${cer} sin vta.</span>
+      </div>
+      <div class="card-inputs-2">
+        <div><div class="inp-label">% costo sobre venta bruta</div>
+          <input type="number" id="pct-costo-${m}" placeholder="%" min="0" step="0.1"
+            value="${pctCosto}" oninput="onPctCosto(${m})"></div>
+        <div>
+          <div class="inp-label">Dto. laboratorios (%) <span style="font-size:10px;color:var(--tx3);font-style:italic;">sugerido</span></div>
+          <input type="number" id="dto-lab-${m}" placeholder="${pctLabSugerido||'%'}" min="0" step="0.1"
+            value="${pctLab}" oninput="onDtoLabMes(${m})">
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--tx3);margin-bottom:4px;">${dtoLabGlobal?tendencia:''}</div>
+      <div class="result-row">
+        <div class="result-meta" id="meta-c-${m}"></div>
+        <div class="result-val"  id="rv-c-${m}">—</div>
+      </div>`;
+    g.appendChild(div);
+  }
+}
+
+async function renderCards(){
+  await Promise.all([renderCardsVentas(),renderCardsCostos()]);
   refreshAll();
-  updateNotes(y);
+  updateNotes(getYear());
 }
 
 function updateNotes(y){
   const lastReal=Object.keys(ipcReal).sort().pop()||'sin datos';
   document.getElementById('notes-title').textContent=`Metodología de cálculo — ${y}`;
-  document.getElementById('note-fer').textContent = y<=2026
-    ? `Los feriados de ${y} se obtienen en tiempo real desde ArgentinaDatos, que publica el calendario oficial del Poder Ejecutivo Nacional. Se actualizan automáticamente al abrir la app.`
-    : `⚠️ Año ${y} — feriados calculados algorítmicamente por ley vigente: inamovibles en fecha fija; trasladables (17/8, 12/10, 20/11) al lunes más cercano; Semana Santa con algoritmo de Butcher; Carnaval derivado de la fecha de Pascua. Los feriados puente NO se incluyen porque son decreto anual del Ejecutivo y no pueden predecirse con antelación.`;
-  document.getElementById('note-ipc').textContent = y<=2026
-    ? `Datos reales del INDEC publicados vía ArgentinaDatos. Los meses marcados "Real" tienen dato oficial confirmado. Los marcados "Proy." usan regresión exponencial decreciente desde el último dato disponible (${lastReal}) hacia un piso de 1,5 % mensual en 24 meses, alineada con el REM del BCRA. Todos los valores son editables manualmente.`
-    : `⚠️ Año ${y} — todos los valores son proyecciones calculadas mediante regresión exponencial decreciente desde el último dato real del INDEC (${lastReal}) hacia un piso de 1,5 % mensual. Orientativo — se recomienda ajustar manualmente conforme el INDEC publique datos o se actualice el REM del BCRA.`;
+  document.getElementById('note-fer').textContent=y<=2026
+    ?`Los feriados de ${y} se obtienen en tiempo real desde ArgentinaDatos, que publica el calendario oficial del Poder Ejecutivo Nacional. Se actualizan automáticamente al abrir la app.`
+    :`⚠️ Año ${y} — feriados calculados algorítmicamente: inamovibles en fecha fija; trasladables (17/8, 12/10, 20/11) al lunes más cercano; Semana Santa con algoritmo de Butcher; Carnaval derivado de la fecha de Pascua. Puentes NO incluidos (son decreto anual del Ejecutivo).`;
+  document.getElementById('note-ipc').textContent=y<=2026
+    ?`Datos reales del INDEC vía ArgentinaDatos. Meses marcados "Real" tienen dato oficial confirmado. Los restantes usan regresión exponencial decreciente desde el último dato disponible (${lastReal}) hacia un piso de 1,5 % mensual en 24 meses. Todos los valores son editables.`
+    :`⚠️ Año ${y} — proyecciones calculadas mediante regresión exponencial decreciente desde el último dato real del INDEC (${lastReal}) hacia un piso de 1,5 % mensual. Orientativo — ajustar manualmente conforme el INDEC publique datos.`;
 }
 
-function onBase(m){ const y=getYear(); if(!bases[y])bases[y]={}; bases[y][m]=document.getElementById('base-'+m).value; refreshAll(); }
-function onIpc(m,y){ const k=y+'-'+pad(m); const v=parseFloat(document.getElementById('ipc-'+m).value); ipcUser[k]=isNaN(v)?undefined:v; refreshAll(); }
-function onDtoOfertas(m){ const y=getYear(); if(!dtosOfertas[y])dtosOfertas[y]={}; const v=parseFloat(document.getElementById('dto-of-'+m).value); dtosOfertas[y][m]=isNaN(v)?0:v; refreshAll(); }
-function onYearChange(){ renderCards(); }
+// ── event handlers ───────────────────────────────────────────────────────────
+function onBase(m){const y=getYear();if(!bases[y])bases[y]={};bases[y][m]=document.getElementById('base-'+m).value;refreshAll();}
+function onIpc(m,y){const k=y+'-'+pad(m);const v=parseFloat(document.getElementById('ipc-'+m).value);ipcUser[k]=isNaN(v)?undefined:v;refreshAll();}
+function onDtoOfertas(m){const y=getYear();if(!dtosOfertas[y])dtosOfertas[y]={};const v=parseFloat(document.getElementById('dto-of-'+m).value);dtosOfertas[y][m]=isNaN(v)?0:v;refreshAll();}
+function onPctCosto(m){const y=getYear();if(!costosMes[y])costosMes[y]={};const v=parseFloat(document.getElementById('pct-costo-'+m).value);costosMes[y][m]=isNaN(v)?undefined:v;refreshAll();}
+function onDtoLabMes(m){const y=getYear();if(!dtosLabMes[y])dtosLabMes[y]={};const v=parseFloat(document.getElementById('dto-lab-'+m).value);dtosLabMes[y][m]=isNaN(v)?undefined:v;refreshAll();}
+function onYearChange(){renderCards();}
 
+// ── refresh principal ────────────────────────────────────────────────────────
 async function refreshAll(){
   const y=getYear(),crec=getCrec(),factor=isNaN(crec)?NaN:(1+crec/100);
-  const precioBase=getPrecio(),dtoCond=getDtoCond(),ganPct=getGanancia();
+  const precioBase=getPrecio(),dtoCond=getDtoCond(),ganPct=getGanancia(),dtoLabGlobal=getDtoLab();
   const ferMap=ferCache[y]||await fetchFeriados(y);
   const tbody=document.getElementById('res-body');
   tbody.innerHTML='';
-  let grandUds=0,grandVB=0,grandDC=0,grandDO=0,grandGan=0,grandVN=0;
+  let gUds=0,gVB=0,gDC=0,gDO=0,gGan=0,gVN=0,gCB=0,gDL=0,gCN=0,gMB=0;
   let sumP=0,totP=0,factorAcum=1;
   lastTableData=[];
 
@@ -440,8 +539,9 @@ async function refreshAll(){
     const precioMes=!isNaN(precioBase)?precioBase*factorAcum:NaN;
     factorAcum*=ipcFactor;
 
+    // ventas
     let diario=NaN,uds=NaN,vb=NaN,dc=NaN,doPesos=NaN,gan=NaN,vn=NaN;
-    if(!isNaN(base)&&!isNaN(factor)){ diario=Math.round(base*factor); uds=Math.round(diario*efec); }
+    if(!isNaN(base)&&!isNaN(factor)){diario=Math.round(base*factor);uds=Math.round(diario*efec);}
     if(!isNaN(uds)&&!isNaN(precioMes)){
       vb=Math.round(uds*precioMes);
       dc=Math.round(vb*dtoCond/100);
@@ -451,31 +551,47 @@ async function refreshAll(){
       vn=vb-dc-doPesos+gan;
     }
 
-    const rv=document.getElementById('rv-'+m),mt=document.getElementById('meta-'+m);
-    if(rv) rv.textContent=isNaN(uds)?'—':fmt(uds)+' uds.';
-    if(mt) mt.textContent=(!isNaN(diario)?'→ '+fmt(diario)+'/día':'')+(!isNaN(precioMes)?' · $'+fmt(precioMes):'');
+    // costos
+    const pctCostoV=costosMes[y]&&costosMes[y][m]!==undefined?costosMes[y][m]:NaN;
+    const dtoLabPct=dtosLabMes[y]&&dtosLabMes[y][m]!==undefined
+      ? dtosLabMes[y][m]
+      : (parseFloat(calcDtoLabSugerido(y,m,dtoLabGlobal))||dtoLabGlobal);
+    let cb=NaN,dl=NaN,cn=NaN,mb=NaN;
+    if(!isNaN(vb)&&!isNaN(pctCostoV)){
+      cb=Math.round(vb*pctCostoV/100);
+      dl=Math.round(cb*dtoLabPct/100);
+      cn=cb-dl;
+      if(!isNaN(vn))mb=vn-cn;
+    }
 
-    if(!isNaN(uds))   grandUds+=uds;
-    if(!isNaN(vb))    grandVB+=vb;
-    if(!isNaN(dc))    grandDC+=dc;
-    if(!isNaN(doPesos)) grandDO+=doPesos;
-    if(!isNaN(gan))   grandGan+=gan;
-    if(!isNaN(vn))    grandVN+=vn;
+    // update tarjetas
+    const rvV=document.getElementById('rv-v-'+m),mtV=document.getElementById('meta-v-'+m);
+    if(rvV)rvV.textContent=isNaN(uds)?'—':fmt(uds)+' uds.';
+    if(mtV)mtV.textContent=(!isNaN(diario)?'→ '+fmt(diario)+'/día':'')+(!isNaN(precioMes)?' · $'+fmt(precioMes):'');
+    const rvC=document.getElementById('rv-c-'+m),mtC=document.getElementById('meta-c-'+m);
+    if(rvC)rvC.textContent=isNaN(cb)?'—':'CB: $'+fmt(cb);
+    if(mtC)mtC.textContent=isNaN(cn)?'':('CN: $'+fmt(cn));
+
+    // totales
+    if(!isNaN(uds))gUds+=uds;if(!isNaN(vb))gVB+=vb;if(!isNaN(dc))gDC+=dc;
+    if(!isNaN(doPesos))gDO+=doPesos;if(!isNaN(gan))gGan+=gan;if(!isNaN(vn))gVN+=vn;
+    if(!isNaN(cb))gCB+=cb;if(!isNaN(dl))gDL+=dl;if(!isNaN(cn))gCN+=cn;if(!isNaN(mb))gMB+=mb;
     if(!isNaN(uds)&&!isNaN(precioMes)){sumP+=precioMes*uds;totP+=uds;}
 
     const dtoOf=(dtosOfertas[y]&&dtosOfertas[y][m])||0;
-    lastTableData.push({
-      mes:MESES[m-1],hab,par,cer,
-      base:isNaN(base)?null:base, diario:isNaN(diario)?null:diario, uds:isNaN(uds)?null:uds,
-      ipc:isNaN(ipcM)?null:ipcM, ipcTipo:isRealIPC(y,m)?'Real':isCalcIPC(y,m)?'Calculado':'Proyectado',
+    lastTableData.push({mes:MESES[m-1],hab,par,cer,
+      base:isNaN(base)?null:base,diario:isNaN(diario)?null:diario,uds:isNaN(uds)?null:uds,
+      ipc:isNaN(ipcM)?null:ipcM,ipcTipo:isRealIPC(y,m)?'Real':isCalcIPC(y,m)?'Calculado':'Proyectado',
       precio:isNaN(precioMes)?null:precioMes,
-      vb:isNaN(vb)?null:vb, dtoCond, dc:isNaN(dc)?null:dc,
-      dtoOf, doPesos:isNaN(doPesos)?null:doPesos,
-      ganPct, gan:isNaN(gan)?null:gan, vn:isNaN(vn)?null:vn
-    });
+      vb:isNaN(vb)?null:vb,dtoCond,dc:isNaN(dc)?null:dc,
+      dtoOf,doPesos:isNaN(doPesos)?null:doPesos,
+      ganPct,gan:isNaN(gan)?null:gan,vn:isNaN(vn)?null:vn,
+      pctCosto:isNaN(pctCostoV)?null:pctCostoV,cb:isNaN(cb)?null:cb,
+      dtoLabPct,dl:isNaN(dl)?null:dl,cn:isNaN(cn)?null:cn,mb:isNaN(mb)?null:mb});
 
     const real=isRealIPC(y,m),calc=isCalcIPC(y,m);
     const bc=real?'badge-real':calc?'badge-calc':'badge-proy',bl=real?'R':calc?'C':'P';
+    const dtoOf2=(dtosOfertas[y]&&dtosOfertas[y][m])||0;
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="left">${MESES[m-1]}</td>
@@ -488,83 +604,93 @@ async function refreshAll(){
       <td class="bold">${isNaN(vb)?'—':'$'+fmt(vb)}</td>
       <td>${dtoCond>0?dtoCond.toFixed(1)+'%':'—'}</td>
       <td class="neg">${isNaN(dc)||dc===0?'—':'−$'+fmt(dc)}</td>
-      <td>${dtoOf>0?dtoOf.toFixed(1)+'%':'—'}</td>
+      <td>${dtoOf2>0?dtoOf2.toFixed(1)+'%':'—'}</td>
       <td class="neg">${isNaN(doPesos)||doPesos===0?'—':'−$'+fmt(doPesos)}</td>
       <td>${ganPct>0?ganPct.toFixed(1)+'%':'—'}</td>
       <td class="pos">${isNaN(gan)||gan===0?'—':'+$'+fmt(gan)}</td>
-      <td class="bold">${isNaN(vn)?'—':'$'+fmt(vn)}</td>`;
+      <td class="bold">${isNaN(vn)?'—':'$'+fmt(vn)}</td>
+      <td class="bold">${isNaN(cb)?'—':'$'+fmt(cb)}</td>
+      <td>${isNaN(dtoLabPct)||dtoLabPct===0?'—':dtoLabPct.toFixed(1)+'%'}</td>
+      <td class="pos">${isNaN(dl)||dl===0?'—':'+$'+fmt(dl)}</td>
+      <td class="bold">${isNaN(cn)?'—':'$'+fmt(cn)}</td>
+      <td class="margin">${isNaN(mb)?'—':'$'+fmt(mb)}</td>`;
     tbody.appendChild(tr);
   }
 
   const inflacAcum=((factorAcum-1)*100).toFixed(1);
-  const tot=document.createElement('tr');
-  tot.className='total-row';
+  const tot=document.createElement('tr');tot.className='total-row';
   tot.innerHTML=`<td class="left">Total anual</td><td colspan="4"></td>
-    <td>${grandUds>0?fmt(grandUds):'—'}</td><td>${inflacAcum}%</td><td></td>
-    <td>${grandVB>0?'$'+fmt(grandVB):'—'}</td>
-    <td></td><td class="neg">${grandDC>0?'−$'+fmt(grandDC):'—'}</td>
-    <td></td><td class="neg">${grandDO>0?'−$'+fmt(grandDO):'—'}</td>
-    <td></td><td class="pos">${grandGan>0?'+$'+fmt(grandGan):'—'}</td>
-    <td>${grandVN>0?'$'+fmt(grandVN):'—'}</td>`;
+    <td>${gUds>0?fmt(gUds):'—'}</td><td>${inflacAcum}%</td><td></td>
+    <td>${gVB>0?'$'+fmt(gVB):'—'}</td>
+    <td></td><td class="neg">${gDC>0?'−$'+fmt(gDC):'—'}</td>
+    <td></td><td class="neg">${gDO>0?'−$'+fmt(gDO):'—'}</td>
+    <td></td><td class="pos">${gGan>0?'+$'+fmt(gGan):'—'}</td>
+    <td>${gVN>0?'$'+fmt(gVN):'—'}</td>
+    <td>${gCB>0?'$'+fmt(gCB):'—'}</td>
+    <td></td><td class="pos">${gDL>0?'+$'+fmt(gDL):'—'}</td>
+    <td>${gCN>0?'$'+fmt(gCN):'—'}</td>
+    <td class="margin">${gMB>0?'$'+fmt(gMB):'—'}</td>`;
   tbody.appendChild(tot);
 
-  document.getElementById('s-uds').textContent    = grandUds>0?fmt(grandUds):'—';
-  document.getElementById('s-vb').textContent     = grandVB>0?fmtM(grandVB):'—';
-  document.getElementById('s-dc').textContent     = grandDC>0?fmtM(grandDC):'—';
-  document.getElementById('s-do').textContent     = grandDO>0?fmtM(grandDO):'—';
-  document.getElementById('s-gan').textContent    = grandGan>0?fmtM(grandGan):'—';
-  document.getElementById('s-vn').textContent     = grandVN>0?fmtM(grandVN):'—';
-  document.getElementById('s-inflac').textContent = inflacAcum+'%';
+  document.getElementById('s-uds').textContent   =gUds>0?fmt(gUds):'—';
+  document.getElementById('s-vb').textContent    =gVB>0?fmtM(gVB):'—';
+  document.getElementById('s-dc').textContent    =gDC>0?fmtM(gDC):'—';
+  document.getElementById('s-do').textContent    =gDO>0?fmtM(gDO):'—';
+  document.getElementById('s-gan').textContent   =gGan>0?fmtM(gGan):'—';
+  document.getElementById('s-vn').textContent    =gVN>0?fmtM(gVN):'—';
+  document.getElementById('s-inflac').textContent=inflacAcum+'%';
+  document.getElementById('s-cb').textContent    =gCB>0?fmtM(gCB):'—';
+  document.getElementById('s-dl').textContent    =gDL>0?fmtM(gDL):'—';
+  document.getElementById('s-cn').textContent    =gCN>0?fmtM(gCN):'—';
+  document.getElementById('s-mb').textContent    =gMB>0?fmtM(gMB):'—';
 }
 
+// ── exportar Excel ────────────────────────────────────────────────────────────
 function exportExcel(){
-  const y=getYear(),crec=getCrec(),precio=getPrecio(),dtoCond=getDtoCond(),ganPct=getGanancia();
+  const y=getYear(),crec=getCrec(),precio=getPrecio(),dtoCond=getDtoCond(),ganPct=getGanancia(),dtoLab=getDtoLab();
   const wb=XLSX.utils.book_new();
   const hdr=['Mes','Háb.','Parc.','Sin vta.','Base/día','Proy./día','Unidades',
-    'Inflac. (%)','Tipo IPC','Precio unit. ($)','Venta bruta ($)',
-    'Dto. condición (%)','Dto. condición ($)','Dto. ofertas (%)','Dto. ofertas ($)',
-    'Ganancia (%)','Ganancia ($)','Venta neta ($)'];
+    'Inflac.(%)','Tipo IPC','Precio unit.($)','Venta bruta($)',
+    'Dto.condición(%)','Dto.condición($)','Dto.ofertas(%)','Dto.ofertas($)',
+    'Ganancia(%)','Ganancia($)','Venta neta($)',
+    '% costo s/venta','Costo bruto($)','Dto.laboratorios(%)','Dto.laboratorios($)','Costo neto($)','Margen bruto($)'];
   const rows=[hdr];
-  let totU=0,totVB=0,totDC=0,totDO=0,totGan=0,totVN=0;
+  let tU=0,tVB=0,tDC=0,tDO=0,tG=0,tVN=0,tCB=0,tDL=0,tCN=0,tMB=0;
   for(const r of lastTableData){
     rows.push([r.mes,r.hab,r.par,r.cer,r.base??'',r.diario??'',r.uds??'',
       r.ipc??'',r.ipcTipo,r.precio!=null?Math.round(r.precio):'',
-      r.vb??'',r.dtoCond,r.dc??'',r.dtoOf,r.doPesos??'',r.ganPct,r.gan??'',r.vn??'']);
-    if(r.uds)totU+=r.uds; if(r.vb)totVB+=r.vb; if(r.dc)totDC+=r.dc;
-    if(r.doPesos)totDO+=r.doPesos; if(r.gan)totGan+=r.gan; if(r.vn)totVN+=r.vn;
+      r.vb??'',r.dtoCond,r.dc??'',r.dtoOf,r.doPesos??'',r.ganPct,r.gan??'',r.vn??'',
+      r.pctCosto??'',r.cb??'',r.dtoLabPct,r.dl??'',r.cn??'',r.mb??'']);
+    if(r.uds)tU+=r.uds;if(r.vb)tVB+=r.vb;if(r.dc)tDC+=r.dc;if(r.doPesos)tDO+=r.doPesos;
+    if(r.gan)tG+=r.gan;if(r.vn)tVN+=r.vn;if(r.cb)tCB+=r.cb;if(r.dl)tDL+=r.dl;if(r.cn)tCN+=r.cn;if(r.mb)tMB+=r.mb;
   }
-  rows.push(['TOTAL ANUAL','','','','','',totU,'','','',totVB,'',totDC,'',totDO,'',totGan,totVN]);
+  rows.push(['TOTAL ANUAL','','','','','',tU,'','','',tVB,'',tDC,'',tDO,'',tG,tVN,'',tCB,'',tDL,tCN,tMB]);
   const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:13},{wch:6},{wch:6},{wch:8},{wch:11},{wch:11},{wch:11},{wch:10},{wch:12},{wch:13},{wch:15},{wch:14},{wch:14},{wch:12},{wch:12},{wch:11},{wch:13},{wch:15}];
+  ws['!cols']=hdr.map(()=>({wch:14}));
   XLSX.utils.book_append_sheet(wb,'Proyección',ws);
-
   const lastReal=Object.keys(ipcReal).sort().pop()||'sin datos';
-  const metRows=[
-    ['SUPUESTOS'],[''],
-    ['Año planificado',y],
-    ['% aumento ventas vs año ant.',isNaN(crec)?'—':crec+'%'],
-    ['Precio bruto dic. año anterior ($)',isNaN(precio)?'—':precio],
-    ['Dto. condición de cliente (%)',dtoCond+'%'],
-    ['Ganancia (%)',ganPct+'%'],[''],
+  const sup=[['SUPUESTOS'],[''],
+    ['Año',y],['% aumento ventas',isNaN(crec)?'—':crec+'%'],
+    ['Precio base dic ($)',isNaN(precio)?'—':precio],
+    ['Dto. condición (%)',dtoCond+'%'],['Ganancia (%)',ganPct+'%'],
+    ['Dto. laboratorios (%)',dtoLab+'%'],[''],
     ['FUENTES'],
-    ['Feriados','ArgentinaDatos (argentinadatos.com) — calendario oficial PEN'],
-    ['Inflación IPC','ArgentinaDatos (argentinadatos.com) — INDEC'],[''],
-    ['METODOLOGÍA — FERIADOS'],
-    [y<=2026?`Datos en tiempo real desde ArgentinaDatos.`
-      :`Año ${y}: calculados por ley. Inamovibles en fecha fija. Trasladables al lunes más cercano. Semana Santa con algoritmo de Butcher. Puentes NO incluidos (son decreto anual).`],[''],
-    ['METODOLOGÍA — INFLACIÓN'],
-    [y<=2026?`Datos reales del INDEC vía ArgentinaDatos. Meses futuros: regresión exponencial desde ${lastReal} hacia piso 1,5 % en 24 meses.`
-      :`Año ${y}: proyección exponencial desde ${lastReal} hacia piso 1,5 %. Orientativo.`],[''],
-    ['VENTA NETA'],['Venta bruta − Dto. condición − Dto. ofertas + Ganancia'],
+    ['Feriados','ArgentinaDatos — calendario oficial PEN'],
+    ['IPC','ArgentinaDatos — INDEC'],[''],
+    ['Venta neta','Venta bruta − Dto.condición − Dto.ofertas + Ganancia'],
+    ['Costo bruto','% costo × Venta bruta'],
+    ['Dto. laboratorios','% dto lab × Costo bruto (positivo, reduce costo)'],
+    ['Costo neto','Costo bruto − Dto. laboratorios'],
+    ['Margen bruto','Venta neta − Costo neto'],
   ];
-  const ws2=XLSX.utils.aoa_to_sheet(metRows);
-  ws2['!cols']=[{wch:35},{wch:90}];
+  const ws2=XLSX.utils.aoa_to_sheet(sup);
+  ws2['!cols']=[{wch:30},{wch:80}];
   XLSX.utils.book_append_sheet(wb,'Metodología',ws2);
   XLSX.writeFile(wb,`proyeccion_anual_${y}.xlsx`);
 }
 
 async function init(){
-  const [ferOk,ipcOk]=await Promise.all([
+  const[ferOk,ipcOk]=await Promise.all([
     fetchFeriados(2025).then(()=>fetchFeriados(2026)).then(()=>true).catch(()=>false),
     fetchIPC()
   ]);
