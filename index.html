@@ -149,7 +149,7 @@
     <div class="metric"><div class="metric-label">Venta bruta</div><div class="metric-value" id="s-vb">—</div></div>
     <div class="metric"><div class="metric-label">Dto. condición ($)</div><div class="metric-value" id="s-dc">—</div></div>
     <div class="metric"><div class="metric-label">Dto. ofertas ($)</div><div class="metric-value" id="s-do">—</div></div>
-    <div class="metric"><div class="metric-label">Ganancia ($)</div><div class="metric-value" id="s-gan">—</div></div>
+    <div class="metric"><div class="metric-label">Recargos a clientes ($)</div><div class="metric-value" id="s-gan">—</div></div>
     <div class="metric"><div class="metric-label">Venta neta</div><div class="metric-value" id="s-vn">—</div></div>
     <div class="metric"><div class="metric-label">Inflación acum.</div><div class="metric-value" id="s-inflac">—</div></div>
   </div>
@@ -176,7 +176,7 @@
           <th rowspan="2">Venta bruta ($)</th>
           <th colspan="2" class="grp" style="text-align:center;">Dto. condición</th>
           <th colspan="2" class="grp" style="text-align:center;">Dto. ofertas</th>
-          <th colspan="2" class="grp" style="text-align:center;">Ganancia</th>
+          <th colspan="2" class="grp" style="text-align:center;">Recargos a clientes</th>
           <th rowspan="2">Venta neta ($)</th>
           <th rowspan="2">Costo bruto ($)</th>
           <th colspan="2" class="grp-cost" style="text-align:center;">Dto. laboratorios</th>
@@ -221,7 +221,7 @@
         <div class="sub">Se aplica igual a todos los meses</div>
       </div>
       <div class="field">
-        <label>Ganancia (%)</label>
+        <label>Recargos a clientes (%)</label>
         <input type="number" id="inp-ganancia" placeholder="Ej: 20" step="0.1" oninput="refreshAll()">
         <div class="sub">% sobre venta bruta, igual para todos los meses</div>
       </div>
@@ -242,7 +242,7 @@
     <div class="panel-top panel-top-1">
       <div class="field">
         <label>Descuento de los laboratorios (%)</label>
-        <input type="number" id="inp-dto-lab" placeholder="Ej: 8" step="0.1" oninput="refreshAll()">
+        <input type="number" id="inp-dto-lab" placeholder="Ej: 8" step="0.1" oninput="updateDtoLabCards()">
         <div class="sub">Se aplica sobre el costo bruto. Es positivo (representa una ganancia). Editable por mes en cada tarjeta.</div>
       </div>
     </div>
@@ -276,8 +276,8 @@
         <div class="notes-section">Ventas</div>
         <dt>Dto. condición</dt><dd>% fijo sobre venta bruta, igual para todos los meses.</dd>
         <dt>Dto. ofertas</dt><dd>% variable por mes sobre venta bruta. Se ingresa en cada tarjeta mensual.</dd>
-        <dt>Ganancia</dt><dd>% fijo sobre venta bruta, igual para todos los meses.</dd>
-        <dt>Venta neta</dt><dd>Venta bruta − Dto. condición − Dto. ofertas + Ganancia.</dd>
+        <dt>Recargos a clientes</dt><dd>% fijo sobre venta bruta, igual para todos los meses.</dd>
+        <dt>Venta neta</dt><dd>Venta bruta − Dto. condición − Dto. ofertas + Recargos a clientes.</dd>
 
         <div class="notes-section">Costos</div>
         <dt>Costo bruto</dt><dd>% de costo sobre venta bruta ingresado en cada tarjeta mensual, aplicado sobre la venta bruta de ese mes.</dd>
@@ -373,6 +373,32 @@ async function fetchIPC(){
     return true;
   }catch(e){return false;}
 }
+
+// Rellena los inputs de IPC con valores reales/proyectados una vez que llegó la API
+function refreshIpcInputs(){
+  const y=getYear();
+  for(let m=1;m<=12;m++){
+    const k=y+'-'+pad(m);
+    const input=document.getElementById('ipc-'+m);
+    if(!input) continue;
+    // Solo poner value si el usuario no editó manualmente
+    if(ipcUser[k]===undefined){
+      const val=getIPC(y,m);
+      input.value=val;
+      input.placeholder='%';
+    }
+    // Actualizar badge Real/Proy/Calc
+    const card=input.closest('.card');
+    if(card){
+      const badge=card.querySelector('.badge-real,.badge-proy,.badge-calc');
+      if(badge){
+        const real=isRealIPC(y,m),calc=isCalcIPC(y,m);
+        badge.className=real?'badge-real':calc?'badge-calc':'badge-proy';
+        badge.textContent=real?'Real':calc?'Calc.':'Proy.';
+      }
+    }
+  }
+}
 function ipcProyectado(y,m){
   const key=y+'-'+pad(m);
   if(ipcReal[key]!==undefined)return ipcReal[key];
@@ -423,8 +449,8 @@ async function renderCardsVentas(){
           <input type="number" id="base-${m}" placeholder="uds." min="0" step="1"
             value="${bases[y][m]||''}" oninput="onBase(${m})"></div>
         <div><div class="inp-label">Inflac. mensual (%)</div>
-          <input type="number" id="ipc-${m}" placeholder="%" step="0.1"
-            value="${ipcVal}" oninput="onIpc(${m},${y})"></div>
+          <input type="number" id="ipc-${m}" placeholder="cargando…" step="0.1"
+            value="" oninput="onIpc(${m},${y})"></div>
         <div><div class="inp-label">Dto. ofertas (%)</div>
           <input type="number" id="dto-of-${m}" placeholder="0" min="0" step="0.1"
             value="${dtosOfertas[y][m]||''}" oninput="onDtoOfertas(${m})"></div>
@@ -463,12 +489,15 @@ async function renderCardsCostos(){
     const{hab,par,cer}=calcMes(y,m,ferMap);
     const pctCosto=(costosMes[y][m]!==undefined?costosMes[y][m]:'');
     // Si el usuario ya editó manualmente, usar ese valor; si no, calcular sugerido
-    const pctLabSugerido = calcDtoLabSugerido(y, m, dtoLabGlobal);
-    const pctLab = dtosLabMes[y][m]!==undefined ? dtosLabMes[y][m] : pctLabSugerido;
     const ipcMes = getIPC(y,m);
     const ipcPrev = m===1 ? getIPC(y-1,12) : getIPC(y,m-1);
     const delta = ipcPrev - ipcMes;
-    const tendencia = delta > 0.1 ? '↑ inflac. baja → dto. mejora' : delta < -0.1 ? '↓ inflac. sube → dto. baja' : '→ inflac. estable';
+    const pctLabSugerido = dtoLabGlobal ? calcDtoLabSugerido(y, m, dtoLabGlobal) : '';
+    const pctLab = dtosLabMes[y][m]!==undefined ? dtosLabMes[y][m] : pctLabSugerido;
+    const tendencia = delta > 0.1 ? '↑ inflac. baja — dto. mejora' : delta < -0.1 ? '↓ inflac. sube — dto. baja' : '→ inflac. estable';
+    const deltaLabel = dtoLabGlobal
+      ? `${tendencia} · IPC: ${ipcPrev.toFixed(1)}% → ${ipcMes.toFixed(1)}% (Δ${delta>=0?'+':''}${delta.toFixed(1)}pp)`
+      : 'Ingresá el dto. base global para ver la sugerencia';
     const div=document.createElement('div');div.className='card';
     div.innerHTML=`
       <div class="card-month">${MESES[m-1]}</div>
@@ -483,11 +512,11 @@ async function renderCardsCostos(){
             value="${pctCosto}" oninput="onPctCosto(${m})"></div>
         <div>
           <div class="inp-label">Dto. laboratorios (%) <span style="font-size:10px;color:var(--tx3);font-style:italic;">sugerido</span></div>
-          <input type="number" id="dto-lab-${m}" placeholder="${pctLabSugerido||'%'}" min="0" step="0.1"
+          <input type="number" id="dto-lab-${m}" placeholder="%" min="0" step="0.1"
             value="${pctLab}" oninput="onDtoLabMes(${m})">
         </div>
       </div>
-      <div style="font-size:10px;color:var(--tx3);margin-bottom:4px;">${dtoLabGlobal?tendencia:''}</div>
+      <div style="font-size:10px;color:var(--tx3);margin:2px 0 6px;line-height:1.4;" id="tend-${m}">${deltaLabel}</div>
       <div class="result-row">
         <div class="result-meta" id="meta-c-${m}"></div>
         <div class="result-val"  id="rv-c-${m}">—</div>
@@ -513,7 +542,28 @@ function updateNotes(y){
     :`⚠️ Año ${y} — proyecciones calculadas mediante regresión exponencial decreciente desde el último dato real del INDEC (${lastReal}) hacia un piso de 1,5 % mensual. Orientativo — ajustar manualmente conforme el INDEC publique datos.`;
 }
 
-// ── event handlers ───────────────────────────────────────────────────────────
+// Actualiza sugerencias de dto lab en tarjetas sin re-renderizar
+function updateDtoLabCards(){
+  const y=getYear(), dtoLabGlobal=getDtoLab();
+  for(let m=1;m<=12;m++){
+    // solo actualizar si el usuario NO editó manualmente este mes
+    if(dtosLabMes[y]&&dtosLabMes[y][m]!==undefined) continue;
+    const input=document.getElementById('dto-lab-'+m);
+    const tend=document.getElementById('tend-'+m);
+    if(!input) continue;
+    const sugerido=calcDtoLabSugerido(y,m,dtoLabGlobal);
+    input.value=sugerido;
+    if(tend){
+      const ipcMes=getIPC(y,m), ipcPrev=m===1?getIPC(y-1,12):getIPC(y,m-1);
+      const delta=ipcPrev-ipcMes;
+      const tendencia=delta>0.1?'↑ inflac. baja — dto. mejora':delta<-0.1?'↓ inflac. sube — dto. baja':'→ inflac. estable';
+      tend.textContent=dtoLabGlobal
+        ?`${tendencia} · IPC: ${ipcPrev.toFixed(1)}% → ${ipcMes.toFixed(1)}% (Δ${delta>=0?'+':''}${delta.toFixed(1)}pp)`
+        :'Ingresá el dto. base global para ver la sugerencia';
+    }
+  }
+  refreshAll();
+}
 function onBase(m){const y=getYear();if(!bases[y])bases[y]={};bases[y][m]=document.getElementById('base-'+m).value;refreshAll();}
 function onIpc(m,y){const k=y+'-'+pad(m);const v=parseFloat(document.getElementById('ipc-'+m).value);ipcUser[k]=isNaN(v)?undefined:v;refreshAll();}
 function onDtoOfertas(m){const y=getYear();if(!dtosOfertas[y])dtosOfertas[y]={};const v=parseFloat(document.getElementById('dto-of-'+m).value);dtosOfertas[y][m]=isNaN(v)?0:v;refreshAll();}
@@ -652,7 +702,7 @@ function exportExcel(){
   const hdr=['Mes','Háb.','Parc.','Sin vta.','Base/día','Proy./día','Unidades',
     'Inflac.(%)','Tipo IPC','Precio unit.($)','Venta bruta($)',
     'Dto.condición(%)','Dto.condición($)','Dto.ofertas(%)','Dto.ofertas($)',
-    'Ganancia(%)','Ganancia($)','Venta neta($)',
+    'Recargos a clientes(%)','Recargos a clientes($)','Venta neta($)',
     '% costo s/venta','Costo bruto($)','Dto.laboratorios(%)','Dto.laboratorios($)','Costo neto($)','Margen bruto($)'];
   const rows=[hdr];
   let tU=0,tVB=0,tDC=0,tDO=0,tG=0,tVN=0,tCB=0,tDL=0,tCN=0,tMB=0;
@@ -672,12 +722,12 @@ function exportExcel(){
   const sup=[['SUPUESTOS'],[''],
     ['Año',y],['% aumento ventas',isNaN(crec)?'—':crec+'%'],
     ['Precio base dic ($)',isNaN(precio)?'—':precio],
-    ['Dto. condición (%)',dtoCond+'%'],['Ganancia (%)',ganPct+'%'],
+    ['Dto. condición (%)',dtoCond+'%'],['Recargos a clientes (%)',ganPct+'%'],
     ['Dto. laboratorios (%)',dtoLab+'%'],[''],
     ['FUENTES'],
     ['Feriados','ArgentinaDatos — calendario oficial PEN'],
     ['IPC','ArgentinaDatos — INDEC'],[''],
-    ['Venta neta','Venta bruta − Dto.condición − Dto.ofertas + Ganancia'],
+    ['Venta neta','Venta bruta − Dto.condición − Dto.ofertas + Recargos a clientes'],
     ['Costo bruto','% costo × Venta bruta'],
     ['Dto. laboratorios','% dto lab × Costo bruto (positivo, reduce costo)'],
     ['Costo neto','Costo bruto − Dto. laboratorios'],
@@ -700,7 +750,11 @@ async function init(){
     &nbsp;|&nbsp;
     <span class="sdot ${ipcOk?'sok':'swarn'}"></span>
     ${ipcOk?'IPC INDEC actualizado (ArgentinaDatos)':'IPC: error de API — usando proyección interna'}`;
-  renderCards();
+  // Renderizar tarjetas con los datos reales ya cargados
+  await renderCards();
+  // Asegurar que los inputs de IPC muestren los valores reales (no el fallback 2.0)
+  refreshIpcInputs();
+  refreshAll();
 }
 init();
 </script>
